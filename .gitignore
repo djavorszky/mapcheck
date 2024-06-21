@@ -1,0 +1,15 @@
+*.jar
+target
+clojure.iws
+clojure.ipr
+nbproject/private/
+maven-classpath
+maven-classpath.properties
+.idea/
+*.iml
+.env.dev
+.calva
+.clj-kondo
+.cpcache
+.lsp
+.nrepl-port
