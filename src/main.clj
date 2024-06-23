@@ -1,29 +1,18 @@
 (ns main
-  (:require [clojure.string :as str]
-            [clj-http.client :as client]
-            [clojure.data.json :as json]))
+  (:require
+   [clj-http.client :as client]
+   [clojure.data.json :as json]
+   [config]))
 
-(defn read-env [env]
-  (->> (str/split-lines (slurp env))
-       (map #(str/split % #"\="))
-       (filter #(> (count %) 1))))
-
-(defn read-conf []
-  (->> (concat (read-env ".env") (read-env ".env.dev"))
-       (apply #(assoc {} (keyword (first %)) (second %)))))
-
-(def conf (read-conf))
 
 (def route-url "https://routes.googleapis.com/directions/v2:computeRoutes")
 
-(def home-plid "i should really")
-(def work-plid "move these two to conf")
+(def ctx {:client client/post
+          :conf (config/read-conf)})
 
 (def headers
-  {"X-Goog-Api-Key" (:MAPS_API_KEY conf),
+  {"X-Goog-Api-Key" (:MAPS_API_KEY (:conf ctx)),
    "X-Goog-FieldMask" "routes.duration,routes.staticDuration"})
-
-(def ctx {:client client/post})
 
 (defn fetch-duration [{:keys [client]} from to]
   (let [body {"origin" {"placeId" from}
@@ -41,10 +30,18 @@
         (first)
         (get "duration"))))
 
-(fetch-duration ctx home-plid work-plid)
-(fetch-duration ctx work-plid home-plid)
+(def conf (:conf ctx))
+(def home-plid (:HOME_PLID conf))
+(def work-plid (:WORK_PLID conf))
 
 (defn mock-client [& _]
   {:body (json/write-str {"routes" [{"duration" "1900s"}]})})
 
-(fetch-duration {:client mock-client} home-plid work-plid)
+
+
+(comment
+
+  (fetch-duration ctx home-plid work-plid)
+  (fetch-duration ctx work-plid home-plid)
+
+  (fetch-duration {:client mock-client} home-plid work-plid))
