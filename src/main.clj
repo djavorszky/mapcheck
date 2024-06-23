@@ -38,7 +38,6 @@
   {:body (json/write-str {"routes" [{"duration" "1900s"}]})})
 
 
-
 (comment
 
   (fetch-duration ctx home-plid work-plid)

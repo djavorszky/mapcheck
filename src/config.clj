@@ -1,6 +1,7 @@
 (ns config
   (:require [clojure.string :as str]
-            [clojure.java.io :as io]))
+            [clojure.java.io :as io]
+            [utils :refer [arr->map]]))
 
 (defn- discover-confs [known-confs]
   (let [confs (->> (.listFiles (io/file "."))
@@ -18,4 +19,4 @@
   (->> (discover-confs [".env.prod" ".env.dev" ".env"])
        (map read-env)
        (apply concat)
-       (reduce (fn [acc [k v]] (assoc acc (keyword k) v)) {})))
+       (reduce arr->map {})))
