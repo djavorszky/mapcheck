@@ -3,7 +3,8 @@
   (:require
    [clj-http.client :as client]
    [clojure.data.json :as json]
-   [config]))
+   [config]
+   [log :refer [info!]]))
 
 
 (def route-url "https://routes.googleapis.com/directions/v2:computeRoutes")
@@ -39,7 +40,7 @@
   {:body (json/write-str {"routes" [{"duration" "1900s"}]})})
 
 (defn -main [& args]
-  (println (fetch-duration ctx home-plid work-plid)))
+  (info! (fetch-duration ctx home-plid work-plid)))
 
 (comment
 
