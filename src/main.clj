@@ -1,4 +1,5 @@
 (ns main
+  (:gen-class)
   (:require
    [clj-http.client :as client]
    [clojure.data.json :as json]
@@ -37,6 +38,8 @@
 (defn mock-client [& _]
   {:body (json/write-str {"routes" [{"duration" "1900s"}]})})
 
+(defn -main [& args]
+  (println (fetch-duration ctx home-plid work-plid)))
 
 (comment
 
